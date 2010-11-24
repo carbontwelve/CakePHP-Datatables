@@ -1,0 +1,33 @@
+         .        .--. .   ..--.   .--.       .     .---.    .    .         
+         |        |   )|   ||   )  |   :     _|_      |      |    |         
+ .-..-.  |.-. .-. |--' |---||--'   |   | .-.  |  .-.  | .-.  |.-. | .-. .--.
+(  (   ) |-.'(.-' |    |   ||      |   ;(   ) | (   ) |(   ) |   )|(.-' `--.
+ `-'`-'`-'  `-`--''    '   ''      '--'  `-'`-`-'`-'`-' `-'`-'`-' `-`--'`--'
+============================================================================
+
+Author: Simon Dann aka Carbon Twelve.
+Based On: datatables php ajax example
+Initial Publish Date: 24th November 2010
+
+Preface & History:
+The one thing that has really annoyed me about cakephp is the way in which it generates paginated tables. While I am unsure about the greater cakephp community, the majority of my projects would contain data-sets in the thousands of rows, which is very difficult to trawl through when using cakephp's default pagination. Upon searching for a useful plugin I stumbled across the very useful jQuery plugin called "datatables." 
+
+After playing with the examples provided I decided to include it within my core project's as the default way of displaying tabulated data and after several weeks of refinements I have released it here for community modification.
+
+Features:
+You are able to order by column, search via the SQL LIKE function on any returned column and either paginate or have a continuous scroll (where 50 rows are loaded initially and then further rows downloaded live as you scroll down.) The best thing with datatables is all of this is handled by ajax calls, so no refreshing of the page - which makes it a lot more like a desktop app such as Microsoft Excel for example.
+
+Installation:
+I have provided a very simple baked example of the functions use and hopefully its simple enough to understand in its current form. I shall amend this section later once I have thought how I am to explain its use.
+
+Drawbacks:
++ As with anything, my first commit of this is not perfect and does have some drawbacks which are possible to address, namely the search is only simple and is called as an OR list in the query. It would be nice to include more search logic to deal with AND, OR and NOT searches.
+
++ While I don't think datatables actually supports this, I would like to see the jQuery side give the option to show or hide rows, and only request the rows which are shown in the ajax call so that the front end application is more user friendly and customisable.
+
++ Lastly, I don't believe I have included datatables order by many columns functionality in this module. It will quite happily order by one row, but I don't know how effective it is at ordering by more than one. However this is something I have not yet used, or tested.
+
+Usage:
+Feel free to use this in any project that you wish, non-commercial or commercial. However if you do modify it to fix bugs or add new features then please fork the project and submit them to github so that the community can benefit.
+
+Thankyou.  
