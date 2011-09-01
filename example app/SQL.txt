@@ -1,0 +1,17 @@
+--
+-- Table structure for table `parts`
+--
+
+DROP TABLE IF EXISTS `parts`;
+CREATE TABLE `parts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `part_number` varchar(45) DEFAULT NULL,
+  `name` varchar(200) DEFAULT NULL,
+  `description` mediumtext,
+  `price` int(11) DEFAULT NULL,
+  `public` tinyint(1) DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
