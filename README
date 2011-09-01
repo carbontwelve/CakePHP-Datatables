@@ -12,22 +12,83 @@ Initial Publish Date: 24th November 2010
 Preface & History:
 The one thing that has really annoyed me about cakephp is the way in which it generates paginated tables. While I am unsure about the greater cakephp community, the majority of my projects would contain data-sets in the thousands of rows, which is very difficult to trawl through when using cakephp's default pagination. Upon searching for a useful plugin I stumbled across the very useful jQuery plugin called "datatables." 
 
-After playing with the examples provided I decided to include it within my core project's as the default way of displaying tabulated data and after several weeks of refinements I have released it here for community modification.
-
-Features:
-You are able to order by column, search via the SQL LIKE function on any returned column and either paginate or have a continuous scroll (where 50 rows are loaded initially and then further rows downloaded live as you scroll down.) The best thing with datatables is all of this is handled by ajax calls, so no refreshing of the page - which makes it a lot more like a desktop app such as Microsoft Excel for example.
-
 Installation:
-I have provided a very simple baked example of the functions use and hopefully its simple enough to understand in its current form. I shall amend this section later once I have thought how I am to explain its use.
-
-Drawbacks:
-+ As with anything, my first commit of this is not perfect and does have some drawbacks which are possible to address, namely the search is only simple and is called as an OR list in the query. It would be nice to include more search logic to deal with AND, OR and NOT searches.
-
-+ While I don't think datatables actually supports this, I would like to see the jQuery side give the option to show or hide rows, and only request the rows which are shown in the ajax call so that the front end application is more user friendly and customisable.
-
-+ Lastly, I don't believe I have included datatables order by many columns functionality in this module. It will quite happily order by one row, but I don't know how effective it is at ordering by more than one. However this is something I have not yet used, or tested.
+I have provided a basic example app for you to demonstrate the controller and helper methods. To get the demo app up and running copy the app folder into a local cake install and setup its database.php. Then create the table by executing the sql within SQL.txt. To populate the database with some dummy data run the generate function (http://example.com/parts/generate) which will randomise and save 1000 rows each time. When you visit the apps webpage (http://example.com/) you should see a working datatable which will load 50 rows at a time (lazyily in the background) as you scroll down, you can order by multiple columns by holding shift while you click the column headers or search using the search box.
 
 Usage:
-Feel free to use this in any project that you wish, non-commercial or commercial. However if you do modify it to fix bugs or add new features then please fork the project and submit them to github so that the community can benefit.
+Usage of the plugin is very simple, copy c12_datatables from the plugins directory into your plugins directory and add reference to the component and helper in the controller you wish to use them like so:
 
-Thankyou.  
+var $components = array('c12_datatables.DataTables', 'RequestHandler');
+var $helpers = array('c12_datatables.DataTables');
+
+Usage of dataTables requires the cakePHP core RequestHandler component.
+
+Below is the index method from my example parts app controller:
+
+	function index() {
+
+		$dataTables = array(
+			'sTable' => 'Part',
+			'aColumns' => array(
+				'id' => array(
+					'sName' => 'id',
+					'sortable' => true,
+					'searchable' => true,
+					'aaSorting' => 'desc',
+				),
+				'modified' => array(
+					'sName' => 'modified',
+					'searchable' => false,
+				),
+				'name',
+				'part_number',
+				'price',
+				'public' => array(
+					'sName' => 'public',
+					'searchable' => false,
+				)
+			),
+			'use' => 'Part', // Could this be the same as sTable? if so remove it and fix the component
+			'sAjaxSource' => array(
+				'action' => 'index'
+			)
+		);
+
+		if ($this->RequestHandler->isAjax()) {
+			$this->DataTables->output($dataTables);
+		}else{
+			$this->set('dataTables', $dataTables);
+		}
+	}
+
+
+sTable and use are both the Models name as I couldn't figure out how to grab them easily from within the component.
+aColumns is an array of columns from your database that you wish included in your table, if you wish to switch off the ability to search or sort that column then it should be referenced within an additional array as demonstrated above.
+
+Below is the index view from my example parts app:
+
+<div class="parts index">
+    <h2><?php __('Parts');?></h2>
+
+	<?php echo $this->DataTables->display($dataTables); ?>
+
+	<?php debug ($dataTables); ?>
+
+	<script type="text/javascript" language="javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" language="javascript" src="/js/jquery.dataTables.min.js"></script>
+	
+	<?php echo $this->DataTables->javaScript($dataTables, array(
+		'sScrollY' => '500px',
+	)); ?>
+
+</div>
+
+To display the table html you use the display method from the helper, passing the $dataTables array to it so it knows which columns to generate.
+
+Then to output the datatables javascript you use the javaScript method from the helper, passing any custom variables you require changing from the defaults. The defaults can be seen from within the method itself.
+
+This method requires jQuery and dataTables js to be included in the webpage, I use this throughout my admin panels so its included in the header of all of them.
+
+
+To do:
+There are a lot of things I would like to add to this, such as automagic handling of belongsTo, hasMany, relationships where you will want to display for example users and the group they belong to. It is possible as I have nastily hacked it into one project already but the code isn't nice enough to publish here.
