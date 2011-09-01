@@ -48,26 +48,26 @@ class DataTablesComponent extends Object {
 		if ($dataTables){			
 			
 			// A way of getting the names of all the columns.
-			if ( isset( $_GET['sNames']) ){
-				$this->sNames = explode(',', $_GET['sNames'] );
+			if ( isset( $this->controller->params['url']['sNames'] ) ){
+				$this->sNames = explode(',', $this->controller->params['url']['sNames'] );
 			}
 			
 			// Are we sorting columns
-			if ( isset( $_GET['iSortCol_0'] ) ){
-				for ( $i=0 ; $i<intval( $_GET['iSortingCols'] ) ; $i++ ){
-					if ( $_GET[ 'bSortable_'.intval($_GET['iSortCol_'.$i]) ] == "true" ){
+			if ( isset( $this->controller->params['url']['iSortCol_0'] ) ){
+				for ( $i=0 ; $i<intval( $this->controller->params['url']['iSortingCols'] ) ; $i++ ){
+					if ( $this->controller->params['url'][ 'bSortable_'.intval( $this->controller->params['url']['iSortCol_'.$i] ) ] == "true" ){
 						if (isset ($this->sNames)){
-							$ordering[] = $dataTables['use'] . '.' . $this->sNames[ intval( $_GET['iSortCol_'.$i] ) ] . ' ' . $_GET['sSortDir_'.$i];
+							$ordering[] = $dataTables['use'] . '.' . $this->sNames[ intval( $this->controller->params['url']['iSortCol_'.$i] ) ] . ' ' . $this->controller->params['url']['sSortDir_'.$i];
 						}
 					}
 				}
 			}
 			
 			// If the user is searching
-			if ( $_GET['sSearch'] != "" ){
+			if ( $this->controller->params['url']['sSearch'] != "" ){
 				for ( $i=0 ; $i<count($this->sNames) ; $i++ ){
-					if ( $_GET['bSearchable_'.$i] == "true"){
-						$conditions[$dataTables['use'] . '.' . $this->sNames[$i] . ' LIKE'] = '%' . $_GET['sSearch'] . '%';
+					if ( $this->controller->params['url']['bSearchable_'.$i] == "true"){
+						$conditions[$dataTables['use'] . '.' . $this->sNames[$i] . ' LIKE'] = '%' . $this->controller->params['url']['sSearch'] . '%';
 					}
 				}
 			}
@@ -83,13 +83,13 @@ class DataTablesComponent extends Object {
 				'recursive' => 1,
 				'fields' => $this->sNames,
 				'order' => $ordering,
-				'limit' => $_GET['iDisplayLength'], 
-				'offset'=> $_GET['iDisplayStart'], 
+				'limit' => $this->controller->params['url']['iDisplayLength'], 
+				'offset'=> $this->controller->params['url']['iDisplayStart'], 
 			);
 			
 			$rResult = $this->$dataTables['use']->find('all', $n);
 			$iTotal = $this->$dataTables['use']->find('count');
-			if ($_GET['sSearch']){
+			if ($this->controller->params['url']['sSearch']){
 				$n['limit'] = null;
 				$n['offset'] = null;
 				$iFilteredTotal = $this->$dataTables['use']->find('count', array('conditions' => $finalconditions));
@@ -99,7 +99,7 @@ class DataTablesComponent extends Object {
 			
 			$output = array(
 				"aoColumns" => implode(',', $this->sNames),
-				"sEcho" => intval($_GET['sEcho']),
+				"sEcho" => intval($this->controller->params['url']['sEcho']),
 				"iTotalRecords" => $iTotal,
 				"iTotalDisplayRecords" => $iFilteredTotal,
 				"aaData" => array()
