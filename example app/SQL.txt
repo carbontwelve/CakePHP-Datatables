@@ -1,3 +1,6 @@
+Please make sure you dont already have a parts table in the database you execute this in as it will drop the table.
+
+
 --
 -- Table structure for table `parts`
 --
